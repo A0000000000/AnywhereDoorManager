@@ -3,13 +3,16 @@ LABEL authors="maoyanluo"
 
 WORKDIR /ws
 
-ADD apache-maven-3.9.9-bin.tar.gz /ws
-ADD jdk-23_linux-x64_bin.tar.gz /ws
+ADD https://dlcdn.apache.org/maven/maven-3/3.9.9/binaries/apache-maven-3.9.9-bin.tar.gz /ws
+ADD https://download.oracle.com/java/23/latest/jdk-23_linux-x64_bin.tar.gz /ws
+
+RUN tar -zxvf apache-maven-3.9.9-bin.tar.gz
+RUN tar -zxvf jdk-23_linux-x64_bin.tar.gz
 
 WORKDIR /ws/code
 
-ADD src /ws/code/src
-ADD pom.xml /ws/code
+COPY src /ws/code/src
+COPY pom.xml /ws/code
 
 ENV JAVA_HOME=/ws/jdk-23.0.1
 ENV MAVEN_HOME=/ws/apache-maven-3.9.9
