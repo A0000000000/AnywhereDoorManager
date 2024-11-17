@@ -1,0 +1,16 @@
+server:
+  port: 80
+
+spring:
+  application:
+    name: anywhere-door-manager
+  datasource:
+    url: jdbc:mysql://${DB_IP:192.168.25.7}:${DB_PORT:3306}/${DB_NAME:anywhere_door}?serverTimezone=Asia/Shanghai
+    hikari:
+      username: ${DB_USER:root}
+      password: ${DB_PASSWORD:09251205}
+      driver-class-name: com.mysql.cj.jdbc.Driver
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
