@@ -1,6 +1,6 @@
 package cn.maoyanluo.anywhere.door.config.auth;
 
-import cn.maoyanluo.anywhere.door.Response;
+import cn.maoyanluo.anywhere.door.bean.Response;
 import cn.maoyanluo.anywhere.door.tools.JwtTools;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.micrometer.common.util.StringUtils;

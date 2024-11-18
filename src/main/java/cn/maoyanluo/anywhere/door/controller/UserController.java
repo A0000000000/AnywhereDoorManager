@@ -1,6 +1,6 @@
 package cn.maoyanluo.anywhere.door.controller;
 
-import cn.maoyanluo.anywhere.door.Response;
+import cn.maoyanluo.anywhere.door.bean.Response;
 import cn.maoyanluo.anywhere.door.entity.User;
 import cn.maoyanluo.anywhere.door.repository.UserRepository;
 import cn.maoyanluo.anywhere.door.tools.JwtTools;

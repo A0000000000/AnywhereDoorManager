@@ -1,4 +1,4 @@
-package cn.maoyanluo.anywhere.door;
+package cn.maoyanluo.anywhere.door.bean;
 
 import lombok.Data;
 
@@ -8,7 +8,6 @@ public class Response<T> {
     private int code;
     private String msg;
     private T data;
-
 
     public static <T> Response<T> success(T data) {
         Response<T> response = new Response<>();
