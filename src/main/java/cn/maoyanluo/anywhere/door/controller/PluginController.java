@@ -58,12 +58,18 @@ public class PluginController {
     public Response<Plugin> create(@RequestBody Plugin plugin, @RequestAttribute("username") String username) {
         if (StringUtils.isEmpty(plugin.getPluginName())
         || StringUtils.isEmpty(plugin.getPluginHost())
-        || plugin.getPluginPort() != null
+        || plugin.getPluginPort() == null
         || StringUtils.isEmpty(plugin.getPluginToken())
         ) {
             Response<Plugin> response = new Response<>();
             response.setCode(-3);
             response.setMsg("MISS_PARAMETER");
+            return response;
+        }
+        if (plugin.getPluginName().contains(" ")) {
+            Response<Plugin> response = new Response<>();
+            response.setCode(-5);
+            response.setMsg("WRONG_NAME");
             return response;
         }
         User user = userRepository.findByUsername(username);

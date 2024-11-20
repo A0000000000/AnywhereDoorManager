@@ -50,34 +50,40 @@ public class ImsdkController {
     @GetMapping
     public Response<List<Imsdk>> getImsdks(@RequestAttribute("username") String username) {
         User user = userRepository.findByUsername(username);
-        List<Imsdk> plugins = repository.findByUserId(user.getId());
-        return Response.success(plugins);
+        List<Imsdk> imsdks = repository.findByUserId(user.getId());
+        return Response.success(imsdks);
     }
 
     @PostMapping("/create")
-    public Response<Imsdk> create(@RequestBody Imsdk plugin, @RequestAttribute("username") String username) {
-        if (StringUtils.isEmpty(plugin.getImsdkName())
-        || StringUtils.isEmpty(plugin.getImsdkHost())
-        || plugin.getImsdkPort() != null
-        || StringUtils.isEmpty(plugin.getImsdkToken())
+    public Response<Imsdk> create(@RequestBody Imsdk imsdk, @RequestAttribute("username") String username) {
+        if (StringUtils.isEmpty(imsdk.getImsdkName())
+        || StringUtils.isEmpty(imsdk.getImsdkHost())
+        || imsdk.getImsdkPort() == null
+        || StringUtils.isEmpty(imsdk.getImsdkToken())
         ) {
             Response<Imsdk> response = new Response<>();
             response.setCode(-3);
             response.setMsg("MISS_PARAMETER");
             return response;
         }
+        if (imsdk.getImsdkName().contains(" ")) {
+            Response<Imsdk> response = new Response<>();
+            response.setCode(-5);
+            response.setMsg("WRONG_NAME");
+            return response;
+        }
         User user = userRepository.findByUsername(username);
         Integer userId = user.getId();
-        plugin.setUserId(userId);
-        plugin.setIsActive(1);
-        plugin = repository.save(plugin);
-        return Response.success(plugin);
+        imsdk.setUserId(userId);
+        imsdk.setIsActive(1);
+        imsdk = repository.save(imsdk);
+        return Response.success(imsdk);
     }
 
     @PutMapping("/update")
-    public Response<Imsdk> update(@RequestBody Imsdk plugin, @RequestAttribute("username") String username) {
+    public Response<Imsdk> update(@RequestBody Imsdk imsdk, @RequestAttribute("username") String username) {
         User user = userRepository.findByUsername(username);
-        Optional<Imsdk> currentImsdkOptional = repository.findById(plugin.getId());
+        Optional<Imsdk> currentImsdkOptional = repository.findById(imsdk.getId());
         if (currentImsdkOptional.isEmpty()) {
             Response<Imsdk> response = new Response<>();
             response.setCode(-3);
@@ -92,32 +98,32 @@ public class ImsdkController {
             return response;
         }
 
-        if (!StringUtils.isEmpty(plugin.getImsdkName())) {
-            currentImsdk.setImsdkName(plugin.getImsdkName());
+        if (!StringUtils.isEmpty(imsdk.getImsdkName())) {
+            currentImsdk.setImsdkName(imsdk.getImsdkName());
         }
 
-        if (!StringUtils.isEmpty(plugin.getImsdkDescribe())) {
-            currentImsdk.setImsdkDescribe(plugin.getImsdkDescribe());
+        if (!StringUtils.isEmpty(imsdk.getImsdkDescribe())) {
+            currentImsdk.setImsdkDescribe(imsdk.getImsdkDescribe());
         }
 
-        if (!StringUtils.isEmpty(plugin.getImsdkHost())) {
-            currentImsdk.setImsdkHost(plugin.getImsdkHost());
+        if (!StringUtils.isEmpty(imsdk.getImsdkHost())) {
+            currentImsdk.setImsdkHost(imsdk.getImsdkHost());
         }
 
-        if (plugin.getImsdkPort() != null) {
-            currentImsdk.setImsdkPort(plugin.getImsdkPort());
+        if (imsdk.getImsdkPort() != null) {
+            currentImsdk.setImsdkPort(imsdk.getImsdkPort());
         }
 
-        if (!StringUtils.isEmpty(plugin.getImsdkPrefix())) {
-            currentImsdk.setImsdkPrefix(plugin.getImsdkPrefix());
+        if (!StringUtils.isEmpty(imsdk.getImsdkPrefix())) {
+            currentImsdk.setImsdkPrefix(imsdk.getImsdkPrefix());
         }
 
-        if (!StringUtils.isEmpty(plugin.getImsdkToken())) {
-            currentImsdk.setImsdkToken(plugin.getImsdkToken());
+        if (!StringUtils.isEmpty(imsdk.getImsdkToken())) {
+            currentImsdk.setImsdkToken(imsdk.getImsdkToken());
         }
 
-        if (plugin.getIsActive() != null) {
-            currentImsdk.setIsActive(plugin.getIsActive());
+        if (imsdk.getIsActive() != null) {
+            currentImsdk.setIsActive(imsdk.getIsActive());
         }
 
         repository.save(currentImsdk);
