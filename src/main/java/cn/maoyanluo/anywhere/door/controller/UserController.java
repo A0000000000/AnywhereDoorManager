@@ -80,10 +80,10 @@ public class UserController {
         Response<Map<String, Object>> response = Response.success(map);
         JwtTools.Pair<String, Boolean> tokenParse = jwtTools.parseToken(token);
         JwtTools.Pair<String, Boolean> flushTokenParse = jwtTools.parseToken(flushToken);
-        if (tokenParse.getFirst() != null && tokenParse.getFirst().equals(flushTokenParse.getFirst())) {
+        if (tokenParse != null && flushTokenParse != null) {
             if (flushTokenParse.getSecond()) {
-                String newToken = jwtTools.generateToken(tokenParse.getFirst());
-                String newFlushToken = jwtTools.generateFlushToken(tokenParse.getFirst());
+                String newToken = jwtTools.generateToken(flushTokenParse.getFirst());
+                String newFlushToken = jwtTools.generateFlushToken(flushTokenParse.getFirst());
                 map.put("token", newToken);
                 map.put("flush_token", newFlushToken);
             } else {

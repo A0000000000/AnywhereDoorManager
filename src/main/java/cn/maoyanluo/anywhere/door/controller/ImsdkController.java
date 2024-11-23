@@ -74,6 +74,13 @@ public class ImsdkController {
         }
         User user = userRepository.findByUsername(username);
         Integer userId = user.getId();
+        Imsdk byImsdkName = repository.findByImsdkNameAndUserId(imsdk.getImsdkName(), userId);
+        if (byImsdkName != null) {
+            Response<Imsdk> response = new Response<>();
+            response.setCode(-5);
+            response.setMsg("NAME_EXISTS");
+            return response;
+        }
         imsdk.setUserId(userId);
         imsdk.setIsActive(1);
         imsdk = repository.save(imsdk);
@@ -97,7 +104,13 @@ public class ImsdkController {
             response.setMsg("NO_PERMISSION");
             return response;
         }
-
+        Imsdk byImsdkName = repository.findByImsdkNameAndUserId(imsdk.getImsdkName(), user.getId());
+        if (byImsdkName != null) {
+            Response<Imsdk> response = new Response<>();
+            response.setCode(-5);
+            response.setMsg("NAME_EXISTS");
+            return response;
+        }
         if (!StringUtils.isEmpty(imsdk.getImsdkName())) {
             currentImsdk.setImsdkName(imsdk.getImsdkName());
         }

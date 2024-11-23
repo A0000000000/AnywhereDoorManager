@@ -11,5 +11,6 @@ import java.util.List;
 public interface PluginRepository extends JpaRepository<Plugin, Integer> {
 
     List<Plugin> findByUserId(Integer userId);
+    Plugin findByPluginNameAndUserId(String pluginName, Integer userId);
 
 }

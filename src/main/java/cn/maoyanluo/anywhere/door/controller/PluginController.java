@@ -74,6 +74,13 @@ public class PluginController {
         }
         User user = userRepository.findByUsername(username);
         Integer userId = user.getId();
+        Plugin byPluginNameAndUserId = repository.findByPluginNameAndUserId(plugin.getPluginName(), userId);
+        if (byPluginNameAndUserId != null) {
+            Response<Plugin> response = new Response<>();
+            response.setCode(-5);
+            response.setMsg("NAME_EXISTS");
+            return response;
+        }
         plugin.setUserId(userId);
         plugin.setIsActive(1);
         plugin = repository.save(plugin);
@@ -97,7 +104,13 @@ public class PluginController {
             response.setMsg("NO_PERMISSION");
             return response;
         }
-
+        Plugin byPluginNameAndUserId = repository.findByPluginNameAndUserId(plugin.getPluginName(), user.getId());
+        if (byPluginNameAndUserId != null) {
+            Response<Plugin> response = new Response<>();
+            response.setCode(-5);
+            response.setMsg("NAME_EXISTS");
+            return response;
+        }
         if (!StringUtils.isEmpty(plugin.getPluginName())) {
             currentPlugin.setPluginName(plugin.getPluginName());
         }

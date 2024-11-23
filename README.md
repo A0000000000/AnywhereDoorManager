@@ -16,7 +16,87 @@
      * success: 返回token及flush_token
      * failed: 返回具体错误类型
 2. 登录
-   
+   * GET /user/login
+   * params:
+     * username: 用户名 QueryString
+     * password: 密码 QueryString
+   * result:
+     * success: 返回token及flush_token
+     * failed: 返回具体错误类型
+3. 刷新令牌
+   * GET /user/flush_token
+   * params:
+     * token: 过期令牌
+     * flush_token: 未过期的刷新令牌
+   * result:
+     * success: 返回token及flush_token
+     * failed: 返回具体错误类型
+
+### Imsdk相关
+1. 查询一条记录
+   * GET /imsdk/{id}
+   * params:
+     * id: imsdk id, 使用路径参数
+   * result:
+     * 成功: imsdk记录
+     * 失败: 对应错误码
+2. 查询所有记录
+   * GET /imsdk
+   * params: 无
+   * result:
+     * 成功: imsdk所有记录
+     * 失败: 对应错误码
+3. 创建一条记录
+   * POST /imsdk/create
+   * params: imsdk数据
+   * result:
+     * 成功: imsdk记录
+     * 失败: 对应错误码
+4. 更新一条记录
+   * PUT /imsdk/update
+   * params: imsdk新数据
+   * result:
+     * 成功: imsdk记录
+     * 失败: 对应错误码
+5. 删除一条记录
+   * DELETE /imsdk/{id}
+   * params: imsdk的id
+   * result:
+     * 成功: 被删除的数据记录
+     * 失败: 对应错误码
+
+### Plugin相关
+1. 查询一条记录
+    * GET /plugin/{id}
+    * params:
+        * id: plugin id, 使用路径参数
+    * result:
+        * 成功: plugin记录
+        * 失败: 对应错误码
+2. 查询所有记录
+    * GET /plugin
+    * params: 无
+    * result:
+        * 成功: plugin所有记录
+        * 失败: 对应错误码
+3. 创建一条记录
+    * POST /plugin/create
+    * params: plugin数据
+    * result:
+        * 成功: plugin记录
+        * 失败: 对应错误码
+4. 更新一条记录
+    * PUT /plugin/update
+    * params: plugin新数据
+    * result:
+        * 成功: plugin记录
+        * 失败: 对应错误码
+5. 删除一条记录
+    * DELETE /plugin/{id}
+    * params: plugin的id
+    * result:
+        * 成功: 被删除的数据记录
+        * 失败: 对应错误码
 
 
 ## 部署方式

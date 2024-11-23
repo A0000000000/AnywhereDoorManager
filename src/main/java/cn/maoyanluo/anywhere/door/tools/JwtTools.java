@@ -3,6 +3,7 @@ package cn.maoyanluo.anywhere.door.tools;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.algorithms.Algorithm;
+import com.auth0.jwt.exceptions.TokenExpiredException;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import org.springframework.stereotype.Component;
@@ -48,6 +49,9 @@ public class JwtTools {
             String username = verifier.verify(token).getClaims().get("username").asString();
             return new Pair<>(username, expiresAt.after(new Date()));
         } catch (Exception e) {
+            if (e instanceof TokenExpiredException) {
+                return new Pair<>("", false);
+            }
             return null;
         }
     }

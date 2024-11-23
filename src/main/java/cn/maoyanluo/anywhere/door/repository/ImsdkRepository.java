@@ -9,5 +9,8 @@ import java.util.List;
 
 @Repository
 public interface ImsdkRepository extends JpaRepository<Imsdk, Integer> {
+
     List<Imsdk> findByUserId(Integer userId);
+    Imsdk findByImsdkNameAndUserId(String imsdkName, Integer userId);
+
 }
