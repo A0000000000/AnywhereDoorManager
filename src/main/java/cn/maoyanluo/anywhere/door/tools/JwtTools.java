@@ -3,7 +3,6 @@ package cn.maoyanluo.anywhere.door.tools;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.algorithms.Algorithm;
-import com.auth0.jwt.exceptions.TokenExpiredException;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import org.springframework.stereotype.Component;
@@ -29,14 +28,13 @@ public class JwtTools {
     }
 
     private String generateTokenInner(String username, long expire) {
-        Date expireDate = new Date(System.currentTimeMillis() + expire * 1000);
         Map<String, Object> map = new HashMap<>();
         map.put("alg", "HS256");
         map.put("typ", "JWT");
         return JWT.create()
                 .withHeader(map)
                 .withClaim("username", username)
-                .withExpiresAt(expireDate)
+                .withClaim("expire_time", System.currentTimeMillis() + expire * 1000)
                 .withIssuedAt(new Date())
                 .sign(Algorithm.HMAC256(TOKEN_SECRET));
     }
@@ -45,13 +43,10 @@ public class JwtTools {
         try {
             Algorithm algorithm = Algorithm.HMAC256(TOKEN_SECRET);
             JWTVerifier verifier = JWT.require(algorithm).build();
-            Date expiresAt = verifier.verify(token).getExpiresAt();
+            long expireTime = verifier.verify(token).getClaims().get("expire_time").asLong();
             String username = verifier.verify(token).getClaims().get("username").asString();
-            return new Pair<>(username, expiresAt.after(new Date()));
+            return new Pair<>(username, expireTime > System.currentTimeMillis());
         } catch (Exception e) {
-            if (e instanceof TokenExpiredException) {
-                return new Pair<>("", false);
-            }
             return null;
         }
     }
