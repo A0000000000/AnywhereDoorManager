@@ -1,6 +1,8 @@
 package cn.maoyanluo.anywhere.door.controller;
 
 import cn.maoyanluo.anywhere.door.bean.Response;
+import cn.maoyanluo.anywhere.door.constant.ErrorCode;
+import cn.maoyanluo.anywhere.door.constant.ErrorMessage;
 import cn.maoyanluo.anywhere.door.entity.Plugin;
 import cn.maoyanluo.anywhere.door.entity.User;
 import cn.maoyanluo.anywhere.door.repository.PluginRepository;
@@ -34,16 +36,10 @@ public class PluginController {
             if (plugin.get().getUserId().equals(user.getId())) {
                 return Response.success(plugin.get());
             } else {
-                Response<Plugin> response = new Response<>();
-                response.setCode(-4);
-                response.setMsg("NO_PERMISSION");
-                return response;
+                return Response.failed(ErrorCode.NO_PERMISSION, ErrorMessage.NO_PERMISSION);
             }
         } else {
-            Response<Plugin> response = new Response<>();
-            response.setCode(-5);
-            response.setMsg("NO_ENTITY");
-            return response;
+            return Response.failed(ErrorCode.NO_ENTITY, ErrorMessage.NO_ENTITY);
         }
     }
 
@@ -61,25 +57,16 @@ public class PluginController {
         || plugin.getPluginPort() == null
         || StringUtils.isEmpty(plugin.getPluginToken())
         ) {
-            Response<Plugin> response = new Response<>();
-            response.setCode(-3);
-            response.setMsg("MISS_PARAMETER");
-            return response;
+            return Response.failed(ErrorCode.MISS_PARAMETER, ErrorMessage.MISS_PARAMETER);
         }
         if (plugin.getPluginName().contains(" ")) {
-            Response<Plugin> response = new Response<>();
-            response.setCode(-5);
-            response.setMsg("WRONG_NAME");
-            return response;
+            return Response.failed(ErrorCode.WRONG_NAME, ErrorMessage.WRONG_NAME);
         }
         User user = userRepository.findByUsername(username);
         Integer userId = user.getId();
         Plugin byPluginNameAndUserId = repository.findByPluginNameAndUserId(plugin.getPluginName(), userId);
         if (byPluginNameAndUserId != null) {
-            Response<Plugin> response = new Response<>();
-            response.setCode(-5);
-            response.setMsg("NAME_EXISTS");
-            return response;
+            return Response.failed(ErrorCode.NAME_EXISTS, ErrorMessage.NAME_EXISTS);
         }
         plugin.setUserId(userId);
         plugin.setIsActive(1);
@@ -92,55 +79,38 @@ public class PluginController {
         User user = userRepository.findByUsername(username);
         Optional<Plugin> currentPluginOptional = repository.findById(plugin.getId());
         if (currentPluginOptional.isEmpty()) {
-            Response<Plugin> response = new Response<>();
-            response.setCode(-3);
-            response.setMsg("MISS_PARAMETER");
-            return response;
+            return Response.failed(ErrorCode.MISS_PARAMETER, ErrorMessage.MISS_PARAMETER);
         }
         Plugin currentPlugin = currentPluginOptional.get();
         if (!Objects.equals(currentPlugin.getUserId(), user.getId())) {
-            Response<Plugin> response = new Response<>();
-            response.setCode(-4);
-            response.setMsg("NO_PERMISSION");
-            return response;
+            return Response.failed(ErrorCode.NO_PERMISSION, ErrorMessage.NO_PERMISSION);
         }
         Plugin byPluginNameAndUserId = repository.findByPluginNameAndUserId(plugin.getPluginName(), user.getId());
         if (byPluginNameAndUserId != null) {
-            Response<Plugin> response = new Response<>();
-            response.setCode(-5);
-            response.setMsg("NAME_EXISTS");
-            return response;
+            return Response.failed(ErrorCode.NAME_EXISTS, ErrorMessage.NAME_EXISTS);
         }
         if (!StringUtils.isEmpty(plugin.getPluginName())) {
             currentPlugin.setPluginName(plugin.getPluginName());
         }
-
         if (!StringUtils.isEmpty(plugin.getPluginDescribe())) {
             currentPlugin.setPluginDescribe(plugin.getPluginDescribe());
         }
-
         if (!StringUtils.isEmpty(plugin.getPluginHost())) {
             currentPlugin.setPluginHost(plugin.getPluginHost());
         }
-
         if (plugin.getPluginPort() != null) {
             currentPlugin.setPluginPort(plugin.getPluginPort());
         }
-
         if (!StringUtils.isEmpty(plugin.getPluginPrefix())) {
             currentPlugin.setPluginPrefix(plugin.getPluginPrefix());
         }
-
         if (!StringUtils.isEmpty(plugin.getPluginToken())) {
             currentPlugin.setPluginToken(plugin.getPluginToken());
         }
-
         if (plugin.getIsActive() != null) {
             currentPlugin.setIsActive(plugin.getIsActive());
         }
-
         repository.save(currentPlugin);
-
         return Response.success(currentPlugin);
     }
 
@@ -153,10 +123,7 @@ public class PluginController {
         }
         Plugin currentPlugin = currentPluginOptional.get();
         if (!Objects.equals(currentPlugin.getUserId(), user.getId())) {
-            Response<Plugin> response = new Response<>();
-            response.setCode(-4);
-            response.setMsg("NO_PERMISSION");
-            return response;
+            return Response.failed(ErrorCode.NO_PERMISSION, ErrorMessage.NO_PERMISSION);
         }
         repository.delete(currentPlugin);
         return Response.success(currentPlugin);

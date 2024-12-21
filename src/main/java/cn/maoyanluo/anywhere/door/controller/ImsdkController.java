@@ -1,6 +1,8 @@
 package cn.maoyanluo.anywhere.door.controller;
 
 import cn.maoyanluo.anywhere.door.bean.Response;
+import cn.maoyanluo.anywhere.door.constant.ErrorCode;
+import cn.maoyanluo.anywhere.door.constant.ErrorMessage;
 import cn.maoyanluo.anywhere.door.entity.Imsdk;
 import cn.maoyanluo.anywhere.door.entity.User;
 import cn.maoyanluo.anywhere.door.repository.ImsdkRepository;
@@ -34,16 +36,10 @@ public class ImsdkController {
             if (imsdk.get().getUserId().equals(user.getId())) {
                 return Response.success(imsdk.get());
             } else {
-                Response<Imsdk> response = new Response<>();
-                response.setCode(-4);
-                response.setMsg("NO_PERMISSION");
-                return response;
+                return Response.failed(ErrorCode.NO_PERMISSION, ErrorMessage.NO_PERMISSION);
             }
         } else {
-            Response<Imsdk> response = new Response<>();
-            response.setCode(-5);
-            response.setMsg("NO_ENTITY");
-            return response;
+            return Response.failed(ErrorCode.NO_ENTITY, ErrorMessage.NO_ENTITY);
         }
     }
 
@@ -61,25 +57,16 @@ public class ImsdkController {
         || imsdk.getImsdkPort() == null
         || StringUtils.isEmpty(imsdk.getImsdkToken())
         ) {
-            Response<Imsdk> response = new Response<>();
-            response.setCode(-3);
-            response.setMsg("MISS_PARAMETER");
-            return response;
+            return Response.failed(ErrorCode.MISS_PARAMETER, ErrorMessage.MISS_PARAMETER);
         }
         if (imsdk.getImsdkName().contains(" ")) {
-            Response<Imsdk> response = new Response<>();
-            response.setCode(-5);
-            response.setMsg("WRONG_NAME");
-            return response;
+            return Response.failed(ErrorCode.WRONG_NAME, ErrorMessage.WRONG_NAME);
         }
         User user = userRepository.findByUsername(username);
         Integer userId = user.getId();
         Imsdk byImsdkName = repository.findByImsdkNameAndUserId(imsdk.getImsdkName(), userId);
         if (byImsdkName != null) {
-            Response<Imsdk> response = new Response<>();
-            response.setCode(-5);
-            response.setMsg("NAME_EXISTS");
-            return response;
+            return Response.failed(ErrorCode.NAME_EXISTS, ErrorMessage.NAME_EXISTS);
         }
         imsdk.setUserId(userId);
         imsdk.setIsActive(1);
@@ -92,55 +79,38 @@ public class ImsdkController {
         User user = userRepository.findByUsername(username);
         Optional<Imsdk> currentImsdkOptional = repository.findById(imsdk.getId());
         if (currentImsdkOptional.isEmpty()) {
-            Response<Imsdk> response = new Response<>();
-            response.setCode(-3);
-            response.setMsg("MISS_PARAMETER");
-            return response;
+            return Response.failed(ErrorCode.MISS_PARAMETER, ErrorMessage.MISS_PARAMETER);
         }
         Imsdk currentImsdk = currentImsdkOptional.get();
         if (!Objects.equals(currentImsdk.getUserId(), user.getId())) {
-            Response<Imsdk> response = new Response<>();
-            response.setCode(-4);
-            response.setMsg("NO_PERMISSION");
-            return response;
+            return Response.failed(ErrorCode.NO_PERMISSION, ErrorMessage.NO_PERMISSION);
         }
         Imsdk byImsdkName = repository.findByImsdkNameAndUserId(imsdk.getImsdkName(), user.getId());
         if (byImsdkName != null) {
-            Response<Imsdk> response = new Response<>();
-            response.setCode(-5);
-            response.setMsg("NAME_EXISTS");
-            return response;
+            return Response.failed(ErrorCode.NAME_EXISTS, ErrorMessage.NAME_EXISTS);
         }
         if (!StringUtils.isEmpty(imsdk.getImsdkName())) {
             currentImsdk.setImsdkName(imsdk.getImsdkName());
         }
-
         if (!StringUtils.isEmpty(imsdk.getImsdkDescribe())) {
             currentImsdk.setImsdkDescribe(imsdk.getImsdkDescribe());
         }
-
         if (!StringUtils.isEmpty(imsdk.getImsdkHost())) {
             currentImsdk.setImsdkHost(imsdk.getImsdkHost());
         }
-
         if (imsdk.getImsdkPort() != null) {
             currentImsdk.setImsdkPort(imsdk.getImsdkPort());
         }
-
         if (!StringUtils.isEmpty(imsdk.getImsdkPrefix())) {
             currentImsdk.setImsdkPrefix(imsdk.getImsdkPrefix());
         }
-
         if (!StringUtils.isEmpty(imsdk.getImsdkToken())) {
             currentImsdk.setImsdkToken(imsdk.getImsdkToken());
         }
-
         if (imsdk.getIsActive() != null) {
             currentImsdk.setIsActive(imsdk.getIsActive());
         }
-
         repository.save(currentImsdk);
-
         return Response.success(currentImsdk);
     }
 
@@ -153,10 +123,7 @@ public class ImsdkController {
         }
         Imsdk currentImsdk = currentImsdkOptional.get();
         if (!Objects.equals(currentImsdk.getUserId(), user.getId())) {
-            Response<Imsdk> response = new Response<>();
-            response.setCode(-4);
-            response.setMsg("NO_PERMISSION");
-            return response;
+            return Response.failed(ErrorCode.NO_PERMISSION, ErrorMessage.NO_PERMISSION);
         }
         repository.delete(currentImsdk);
         return Response.success(currentImsdk);

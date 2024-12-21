@@ -1,6 +1,9 @@
 package cn.maoyanluo.anywhere.door.controller;
 
 import cn.maoyanluo.anywhere.door.bean.Response;
+import cn.maoyanluo.anywhere.door.bean.dto.Token;
+import cn.maoyanluo.anywhere.door.constant.ErrorCode;
+import cn.maoyanluo.anywhere.door.constant.ErrorMessage;
 import cn.maoyanluo.anywhere.door.entity.User;
 import cn.maoyanluo.anywhere.door.repository.UserRepository;
 import cn.maoyanluo.anywhere.door.tools.JwtTools;
@@ -9,7 +12,6 @@ import io.micrometer.common.util.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.HashMap;
 import java.util.Map;
 
 @RestController
@@ -28,99 +30,69 @@ public class UserController {
     private final JwtTools jwtTools;
 
     @GetMapping("/register")
-    public Response<Map<String, Object>> register(@RequestParam("username") String username,
-                                                  @RequestParam("password") String password) {
-        Map<String, Object> map = new HashMap<>();
-        Response<Map<String, Object>> response = Response.success(map);
+    public Response<Token> register(@RequestParam("username") String username,
+                                    @RequestParam("password") String password) {
         if (StringUtils.isEmpty(username) || StringUtils.isEmpty(password)) {
-            response.setCode(-2);
-            response.setMsg("failed");
-            map.put("status", "USERNAME_OR_PASSWORD_EMPTY");
-            return response;
+            return Response.failed(ErrorCode.USERNAME_OR_PASSWORD_EMPTY, ErrorMessage.USERNAME_OR_PASSWORD_EMPTY);
         }
         User findByUsername = repository.findByUsername(username);
         if (findByUsername != null) {
-            response.setCode(-2);
-            response.setMsg("failed");
-            map.put("status", "USERNAME_EXIST");
-            return response;
+            return Response.failed(ErrorCode.USERNAME_EXIST, ErrorMessage.USERNAME_EXIST);
         }
         User user = new User(null, username, md5Tools.md5(password));
         repository.save(user);
         String token = jwtTools.generateToken(username);
         String flushToken = jwtTools.generateFlushToken(username);
-        map.put("token", token);
-        map.put("flush_token", flushToken);
-        return response;
+        return Response.success(new Token(token, flushToken));
     }
 
     @GetMapping("/login")
-    public Response<Map<String, Object>> login(@RequestParam("username") String username,
+    public Response<Token> login(@RequestParam("username") String username,
                                                @RequestParam("password") String password) {
-        Map<String, Object> map = new HashMap<>();
-        Response<Map<String, Object>> response = Response.success(map);
         User user = repository.findByUsername(username);
         if (md5Tools.md5(password).equals(user.getPassword())) {
             String token = jwtTools.generateToken(username);
             String flushToken = jwtTools.generateFlushToken(username);
-            map.put("token", token);
-            map.put("flush_token", flushToken);
+            return Response.success(new Token(token, flushToken));
         } else {
-            response.setCode(-2);
-            response.setMsg("failed");
-            map.put("status", "PASSWORD_WRONG");
+            return Response.failed(ErrorCode.PASSWORD_WRONG, ErrorMessage.PASSWORD_WRONG);
         }
-        return response;
     }
 
     @GetMapping("/flush_token")
-    public Response<Map<String, Object>> flushToken(@RequestParam("token") String token,
+    public Response<Token> flushToken(@RequestParam("token") String token,
                                                     @RequestParam("flush_token") String flushToken) {
-        Map<String, Object> map = new HashMap<>();
-        Response<Map<String, Object>> response = Response.success(map);
         JwtTools.Pair<String, Boolean> tokenParse = jwtTools.parseToken(token);
         JwtTools.Pair<String, Boolean> flushTokenParse = jwtTools.parseToken(flushToken);
         if (tokenParse != null && flushTokenParse != null) {
             if (flushTokenParse.getSecond()) {
                 String newToken = jwtTools.generateToken(flushTokenParse.getFirst());
                 String newFlushToken = jwtTools.generateFlushToken(flushTokenParse.getFirst());
-                map.put("token", newToken);
-                map.put("flush_token", newFlushToken);
+                return Response.success(new Token(newToken, newFlushToken));
             } else {
-                response.setCode(-2);
-                response.setMsg("failed");
-                map.put("status", "FLUSH_TOKEN_EXPIRE");
+                return Response.failed(ErrorCode.FLUSH_TOKEN_EXPIRE, ErrorMessage.FLUSH_TOKEN_EXPIRE);
             }
         } else {
-            response.setCode(-2);
-            response.setMsg("failed");
-            map.put("status", "TOKEN_FLUSH_TOKEN_ERROR");
+            return Response.failed(ErrorCode.TOKEN_FLUSH_TOKEN_ERROR, ErrorMessage.TOKEN_FLUSH_TOKEN_ERROR);
         }
-        return response;
     }
 
     @PutMapping("/update_password")
-    public Response<Map<String, Object>> updatePassword(@RequestAttribute("username") String username, @RequestBody Map<String, String> params) {
+    public Response<Object> updatePassword(@RequestAttribute("username") String username, @RequestBody Map<String, String> params) {
         String password = params.get("password");
         String newPassword = params.get("new_password");
-        Map<String, Object> map = new HashMap<>();
-        Response<Map<String, Object>> response = Response.success(map);
         if (username != null) {
             User user = repository.findByUsername(username);
             if (md5Tools.md5(password).equals(user.getPassword()) && !StringUtils.isEmpty(newPassword)) {
                 user.setPassword(md5Tools.md5(newPassword));
                 repository.save(user);
+                return Response.success(null);
             } else {
-                response.setCode(-2);
-                response.setMsg("failed");
-                map.put("status", "PASSWORD_WRONG");
+                return Response.failed(ErrorCode.PASSWORD_WRONG, ErrorMessage.PASSWORD_WRONG);
             }
         } else {
-            response.setCode(-2);
-            response.setMsg("failed");
-            map.put("status", "TOKEN_WRONG");
+            return Response.failed(ErrorCode.TOKEN_WRONG, ErrorMessage.TOKEN_WRONG);
         }
-        return response;
     }
 
 }
