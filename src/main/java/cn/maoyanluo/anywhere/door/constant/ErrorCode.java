@@ -14,5 +14,8 @@ public class ErrorCode {
     public static final int NO_ENTITY = -9;
     public static final int WRONG_NAME = -10;
     public static final int NAME_EXISTS = -11;
+    public static final int EMPTY_TOKEN = -12;
+    public static final int ERROR_TOKEN = -13;
+    public static final int EXPIRE_TOKEN = -14;
 
 }

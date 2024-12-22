@@ -14,5 +14,8 @@ public class ErrorMessage {
     public static final String NO_ENTITY = "NO_ENTITY";
     public static final String WRONG_NAME = "WRONG_NAME";
     public static final String NAME_EXISTS = "NAME_EXISTS";
+    public static final String EMPTY_TOKEN = "EMPTY_TOKEN";
+    public static final String ERROR_TOKEN = "ERROR_TOKEN";
+    public static final String EXPIRE_TOKEN = "EXPIRE_TOKEN";
 
 }

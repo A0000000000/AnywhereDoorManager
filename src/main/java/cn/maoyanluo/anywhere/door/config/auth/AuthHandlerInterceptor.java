@@ -1,6 +1,9 @@
 package cn.maoyanluo.anywhere.door.config.auth;
 
 import cn.maoyanluo.anywhere.door.bean.Response;
+import cn.maoyanluo.anywhere.door.constant.ErrorCode;
+import cn.maoyanluo.anywhere.door.constant.ErrorMessage;
+import cn.maoyanluo.anywhere.door.constant.ParamsConstant;
 import cn.maoyanluo.anywhere.door.tools.JwtTools;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.micrometer.common.util.StringUtils;
@@ -9,9 +12,6 @@ import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
-
-import java.util.HashMap;
-import java.util.Map;
 
 @Component
 public class AuthHandlerInterceptor implements HandlerInterceptor {
@@ -27,35 +27,22 @@ public class AuthHandlerInterceptor implements HandlerInterceptor {
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
-        String token = request.getHeader("token");
-        Response<Map<String, Object>> responseEntity = new Response<>();
-        responseEntity.setCode(-1);
-        responseEntity.setMsg("failed");
+        String token = request.getHeader(ParamsConstant.TOKEN);
         if (StringUtils.isEmpty(token)) {
-            Map<String, Object> result = new HashMap<>();
-            result.put("status", "EMPTY_TOKEN");
-            responseEntity.setData(result);
-            response.getOutputStream().println(objectMapper.writeValueAsString(responseEntity));
+            response.getOutputStream().println(objectMapper.writeValueAsString(Response.failed(ErrorCode.EMPTY_TOKEN, ErrorMessage.EMPTY_TOKEN)));
             return false;
         }
         JwtTools.Pair<String, Boolean> parseToken = jwtTools.parseToken(token);
         if (parseToken == null) {
-            Map<String, Object> result = new HashMap<>();
-            result.put("status", "ERROR_TOKEN");
-            responseEntity.setData(result);
-            response.getOutputStream().println(objectMapper.writeValueAsString(responseEntity));
+            response.getOutputStream().println(objectMapper.writeValueAsString(Response.failed(ErrorCode.ERROR_TOKEN, ErrorMessage.ERROR_TOKEN)));
             return false;
         }
         if (!parseToken.getSecond()) {
-            Map<String, Object> result = new HashMap<>();
-            result.put("status", "EXPIRE_TOKEN");
-            responseEntity.setData(result);
-            response.getOutputStream().println(objectMapper.writeValueAsString(responseEntity));
+            response.getOutputStream().println(objectMapper.writeValueAsString(Response.failed(ErrorCode.EXPIRE_TOKEN, ErrorMessage.EXPIRE_TOKEN)));
             return false;
         }
         request.setAttribute("username", parseToken.getFirst());
         return true;
     }
-
 
 }

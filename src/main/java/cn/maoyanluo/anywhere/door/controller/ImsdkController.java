@@ -115,7 +115,7 @@ public class ImsdkController {
     }
 
     @DeleteMapping("/{id}")
-    public Response<Imsdk> delete(@PathVariable("id") Integer id ,@RequestAttribute("username") String username) {
+    public Response<Imsdk> delete(@PathVariable("id") Integer id, @RequestAttribute("username") String username) {
         User user = userRepository.findByUsername(username);
         Optional<Imsdk> currentImsdkOptional = repository.findById(id);
         if (currentImsdkOptional.isEmpty()) {

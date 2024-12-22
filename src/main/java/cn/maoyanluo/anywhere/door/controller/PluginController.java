@@ -115,7 +115,7 @@ public class PluginController {
     }
 
     @DeleteMapping("/{id}")
-    public Response<Plugin> delete(@PathVariable("id") Integer id ,@RequestAttribute("username") String username) {
+    public Response<Plugin> delete(@PathVariable("id") Integer id, @RequestAttribute("username") String username) {
         User user = userRepository.findByUsername(username);
         Optional<Plugin> currentPluginOptional = repository.findById(id);
         if (currentPluginOptional.isEmpty()) {
