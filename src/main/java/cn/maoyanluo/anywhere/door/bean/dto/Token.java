@@ -1,5 +1,6 @@
 package cn.maoyanluo.anywhere.door.bean.dto;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -10,6 +11,7 @@ import lombok.NoArgsConstructor;
 public class Token {
 
     private String token;
+    @JsonProperty("flush_token")
     private String flushToken;
 
 }
