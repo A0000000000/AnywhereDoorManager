@@ -41,7 +41,7 @@ public class AuthHandlerInterceptor implements HandlerInterceptor {
             response.getOutputStream().println(objectMapper.writeValueAsString(Response.failed(ErrorCode.EXPIRE_TOKEN, ErrorMessage.EXPIRE_TOKEN)));
             return false;
         }
-        request.setAttribute("username", parseToken.getFirst());
+        request.setAttribute(ParamsConstant.USERNAME, parseToken.getFirst());
         return true;
     }
 
