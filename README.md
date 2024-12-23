@@ -105,4 +105,4 @@
 3. 打包镜像: 
     * `docker buildx build --platform linux/amd64 -t 192.168.25.5:31100/maoyanluo/anywhere-door-manager-test:1.0 . --load`
 4. 创建容器:
-    * `docker run --name anywhere-door-manager -itd -p 8080:80 -e DB_IP=192.168.25.7 -e DB_PORT=3306 -e DB_NAME=anywhere_door -e DB_USER=root -e DB_PASSWORD=09251205 192.168.25.5:31100/maoyanluo/anywhere-door-manager:1.0`
+    * `docker run --name anywhere-door-manager -itd -p 8080:80 -e DB_IP=192.168.25.7 -e DB_PORT=3306 -e DB_NAME=anywhere_door -e DB_USER=root -e DB_PASSWORD=09251205 --restart=always 192.168.25.5:31100/maoyanluo/anywhere-door-manager:1.0`
