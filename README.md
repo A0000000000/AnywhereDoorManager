@@ -168,3 +168,8 @@ spec:
   selector:
     app: anywhere-door-manager
 ```
+
+## 使用
+1. 创建一个用户: GET user/register?username=user&password=pwd
+2. 登录: GET user/login?username=user&password=pwd
+3. 以上两个接口都会返回token及flush_token, 通过携带token, 可以进一步创建imsdk或plugin
