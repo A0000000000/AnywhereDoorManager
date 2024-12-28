@@ -157,7 +157,7 @@
 1. 将代码仓库clone到本地
 2. 安装docker及buildx
 3. 打包镜像: 
-    * `docker buildx build --platform linux/amd64 -t 192.168.25.5:31100/maoyanluo/anywhere-door-manager-test:1.0 . --load`
+    * `docker buildx build --platform linux/amd64 -t 192.168.25.5:31100/maoyanluo/anywhere-door-manager:1.0 . --load`
 
 ## 部署方式
 
