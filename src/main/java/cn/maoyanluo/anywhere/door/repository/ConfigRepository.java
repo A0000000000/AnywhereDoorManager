@@ -10,6 +10,6 @@ import java.util.List;
 public interface ConfigRepository extends JpaRepository<Config, Integer> {
 
     List<Config> findAllByUserId(Integer userId);
-    Config findConfigByConfigKeyAndUserId(String configKey, int userId);
+    Config findConfigByConfigKeyAndUserIdAndType(String configKey, int userId, int type);
 
 }
