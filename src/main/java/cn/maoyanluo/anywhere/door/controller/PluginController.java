@@ -110,7 +110,7 @@ public class PluginController {
         if (plugin.getIsActive() != null) {
             currentPlugin.setIsActive(plugin.getIsActive());
         }
-        repository.save(currentPlugin);
+        currentPlugin = repository.save(currentPlugin);
         return Response.success(currentPlugin);
     }
 

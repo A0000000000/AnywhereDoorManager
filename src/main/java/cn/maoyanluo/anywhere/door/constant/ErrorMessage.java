@@ -17,5 +17,6 @@ public class ErrorMessage {
     public static final String EMPTY_TOKEN = "EMPTY_TOKEN";
     public static final String ERROR_TOKEN = "ERROR_TOKEN";
     public static final String EXPIRE_TOKEN = "EXPIRE_TOKEN";
+    public static final String PARAMETER_ERROR = "PARAMETER_ERROR";
 
 }

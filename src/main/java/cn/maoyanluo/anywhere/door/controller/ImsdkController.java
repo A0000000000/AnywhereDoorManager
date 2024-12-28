@@ -110,7 +110,7 @@ public class ImsdkController {
         if (imsdk.getIsActive() != null) {
             currentImsdk.setIsActive(imsdk.getIsActive());
         }
-        repository.save(currentImsdk);
+        currentImsdk = repository.save(currentImsdk);
         return Response.success(currentImsdk);
     }
 
