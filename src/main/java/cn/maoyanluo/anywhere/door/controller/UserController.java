@@ -50,7 +50,10 @@ public class UserController {
     public Response<Token> login(@RequestParam("username") String username,
                                                @RequestParam("password") String password) {
         User user = repository.findByUsername(username);
-        if (user != null && md5Tools.md5(password).equals(user.getPassword())) {
+        if (user == null) {
+            return Response.failed(ErrorCode.USER_NOT_EXIST, ErrorMessage.USER_NOT_EXIST);
+        }
+        if (md5Tools.md5(password).equals(user.getPassword())) {
             String token = jwtTools.generateToken(username);
             String flushToken = jwtTools.generateFlushToken(username);
             return Response.success(new Token(token, flushToken));
