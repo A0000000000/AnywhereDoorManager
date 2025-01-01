@@ -129,8 +129,8 @@ public class ImsdkController {
         if (!Objects.equals(currentImsdk.getUserId(), user.getId())) {
             return Response.failed(ErrorCode.NO_PERMISSION, ErrorMessage.NO_PERMISSION);
         }
-        repository.delete(currentImsdk);
         configRepository.deleteConfigByTargetIdAndTypeAndUserId(currentImsdk.getId(), Config.TYPE_IMSDK, user.getId());
+        repository.delete(currentImsdk);
         return Response.success(currentImsdk);
     }
 

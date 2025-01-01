@@ -2,7 +2,9 @@ package cn.maoyanluo.anywhere.door.repository;
 
 import cn.maoyanluo.anywhere.door.entity.Config;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -12,6 +14,8 @@ public interface ConfigRepository extends JpaRepository<Config, Integer> {
     List<Config> findAllByUserId(Integer userId);
     List<Config> findAllByUserIdAndTypeAndTargetId(Integer userId, Integer type, Integer targetId);
     Config findConfigByConfigKeyAndUserIdAndType(String configKey, Integer userId, Integer type);
+    @Transactional
+    @Modifying
     void deleteConfigByTargetIdAndTypeAndUserId(Integer targetId, Integer type, Integer userId);
 
 }
