@@ -166,6 +166,7 @@
     * `docker run --name anywhere-door-manager -itd -p 8080:80 -e DB_IP=ip -e DB_PORT=port -e DB_NAME=anywhere_door -e DB_USER=user -e DB_PASSWORD=pwd --restart=always 192.168.25.5:31100/maoyanluo/anywhere-door-manager:1.0`
 
 ### Kubernetes
+* 使用anywhere-door-manager-webui
 ```yaml
 ---
 apiVersion: apps/v1
@@ -206,6 +207,23 @@ apiVersion: v1
 kind: Service
 metadata:
   name: anywhere-door-manager-service
+  namespace: anywhere-door
+  labels:
+    app: anywhere-door-manager
+spec:
+  type: ClusterIP
+  ports:
+  - port: 80
+    targetPort: 80
+  selector:
+    app: anywhere-door-manager
+```
+* 使用RESTful API
+```yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: anywhere-door-manager-service-export
   namespace: anywhere-door
   labels:
     app: anywhere-door-manager
