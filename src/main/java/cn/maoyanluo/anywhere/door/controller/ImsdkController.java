@@ -3,8 +3,10 @@ package cn.maoyanluo.anywhere.door.controller;
 import cn.maoyanluo.anywhere.door.bean.Response;
 import cn.maoyanluo.anywhere.door.constant.ErrorCode;
 import cn.maoyanluo.anywhere.door.constant.ErrorMessage;
+import cn.maoyanluo.anywhere.door.entity.Config;
 import cn.maoyanluo.anywhere.door.entity.Imsdk;
 import cn.maoyanluo.anywhere.door.entity.User;
+import cn.maoyanluo.anywhere.door.repository.ConfigRepository;
 import cn.maoyanluo.anywhere.door.repository.ImsdkRepository;
 import cn.maoyanluo.anywhere.door.repository.UserRepository;
 import io.micrometer.common.util.StringUtils;
@@ -20,13 +22,15 @@ import java.util.Optional;
 public class ImsdkController {
 
     @Autowired
-    public ImsdkController(ImsdkRepository repository, UserRepository userRepository) {
+    public ImsdkController(ImsdkRepository repository, UserRepository userRepository, ConfigRepository configRepository) {
         this.repository = repository;
         this.userRepository = userRepository;
+        this.configRepository = configRepository;
     }
 
     private final ImsdkRepository repository;
     private final UserRepository userRepository;
+    private final ConfigRepository configRepository;
 
     @GetMapping("/{id}")
     public Response<Imsdk> getImsdkById(@PathVariable("id") Integer id, @RequestAttribute("username") String username) {
@@ -86,7 +90,7 @@ public class ImsdkController {
             return Response.failed(ErrorCode.NO_PERMISSION, ErrorMessage.NO_PERMISSION);
         }
         Imsdk byImsdkName = repository.findByImsdkNameAndUserId(imsdk.getImsdkName(), user.getId());
-        if (byImsdkName != null) {
+        if (byImsdkName != null && !Objects.equals(byImsdkName.getId(), imsdk.getId())) {
             return Response.failed(ErrorCode.NAME_EXISTS, ErrorMessage.NAME_EXISTS);
         }
         if (!StringUtils.isEmpty(imsdk.getImsdkName())) {
@@ -126,6 +130,7 @@ public class ImsdkController {
             return Response.failed(ErrorCode.NO_PERMISSION, ErrorMessage.NO_PERMISSION);
         }
         repository.delete(currentImsdk);
+        configRepository.deleteConfigByTargetIdAndTypeAndUserId(currentImsdk.getId(), Config.TYPE_IMSDK, user.getId());
         return Response.success(currentImsdk);
     }
 

@@ -3,8 +3,10 @@ package cn.maoyanluo.anywhere.door.controller;
 import cn.maoyanluo.anywhere.door.bean.Response;
 import cn.maoyanluo.anywhere.door.constant.ErrorCode;
 import cn.maoyanluo.anywhere.door.constant.ErrorMessage;
+import cn.maoyanluo.anywhere.door.entity.Config;
 import cn.maoyanluo.anywhere.door.entity.Plugin;
 import cn.maoyanluo.anywhere.door.entity.User;
+import cn.maoyanluo.anywhere.door.repository.ConfigRepository;
 import cn.maoyanluo.anywhere.door.repository.PluginRepository;
 import cn.maoyanluo.anywhere.door.repository.UserRepository;
 import io.micrometer.common.util.StringUtils;
@@ -20,13 +22,15 @@ import java.util.Optional;
 public class PluginController {
 
     @Autowired
-    public PluginController(PluginRepository repository, UserRepository userRepository) {
+    public PluginController(PluginRepository repository, UserRepository userRepository, ConfigRepository configRepository) {
         this.repository = repository;
         this.userRepository = userRepository;
+        this.configRepository = configRepository;
     }
 
     private final PluginRepository repository;
     private final UserRepository userRepository;
+    private final ConfigRepository configRepository;
 
     @GetMapping("/{id}")
     public Response<Plugin> getPluginById(@PathVariable("id") Integer id, @RequestAttribute("username") String username) {
@@ -86,7 +90,7 @@ public class PluginController {
             return Response.failed(ErrorCode.NO_PERMISSION, ErrorMessage.NO_PERMISSION);
         }
         Plugin byPluginNameAndUserId = repository.findByPluginNameAndUserId(plugin.getPluginName(), user.getId());
-        if (byPluginNameAndUserId != null) {
+        if (byPluginNameAndUserId != null && !Objects.equals(byPluginNameAndUserId.getId(), plugin.getId())) {
             return Response.failed(ErrorCode.NAME_EXISTS, ErrorMessage.NAME_EXISTS);
         }
         if (!StringUtils.isEmpty(plugin.getPluginName())) {
@@ -125,6 +129,7 @@ public class PluginController {
         if (!Objects.equals(currentPlugin.getUserId(), user.getId())) {
             return Response.failed(ErrorCode.NO_PERMISSION, ErrorMessage.NO_PERMISSION);
         }
+        configRepository.deleteConfigByTargetIdAndTypeAndUserId(currentPlugin.getId(), Config.TYPE_PLUGIN, user.getId());
         repository.delete(currentPlugin);
         return Response.success(currentPlugin);
     }
