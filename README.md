@@ -106,20 +106,12 @@
    * result:
      * 成功: 返回config内容
      * 失败: 对应错误码
-2. 根据config key查询一条记录
-   * GET /config/{type}/{config key}
-   * params:
-     * type: 0: Plugin, 1: Imsdk
-     * config key: 配置键
-   * result:
-     * 成功: 返回config内容
-     * 失败: 对应错误码
-3. 查询所有config
+2. 查询所有config
    * GET /config
    * result:
      * 成功: 返回config内容
      * 失败: 对应错误码
-4. 新增一条config
+3. 新增一条config
     * POST /config/create
     * params: 使用json格式数据
       * type: 0: Plugin, 1: Imsdk
@@ -129,7 +121,7 @@
     * result:
       * 成功: 返回新建config内容
       * 失败: 对应错误码
-5. 更新一条记录
+4. 更新一条记录
    * PUT /config/update
    * params: 使用json格式数据
      * id: config id
@@ -138,7 +130,7 @@
    * result:
      * 成功: 返回更新后的config内容
      * 失败: 对应错误码
-6. 删除一条记录
+5. 删除一条记录
    * DELETE /config/{id}
    * params:
      * id: config id
