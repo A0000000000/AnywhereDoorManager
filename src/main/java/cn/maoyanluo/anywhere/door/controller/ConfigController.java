@@ -59,15 +59,6 @@ public class ConfigController {
         return Response.success(null);
     }
 
-    @GetMapping("/{type}/{config_key}")
-    public Response<Config> getConfigByConfigKey(@PathVariable("type") Integer type, @PathVariable("config_key") String configKey, @RequestAttribute("username") String username) {
-        if (type == null || (type != Config.TYPE_IMSDK && type != Config.TYPE_PLUGIN)) {
-            return Response.failed(ErrorCode.PARAMETER_ERROR, ErrorMessage.PARAMETER_ERROR);
-        }
-        User user = userRepository.findByUsername(username);
-        return Response.success(repository.findConfigByConfigKeyAndUserIdAndType(configKey, user.getId(), type));
-    }
-
     @PostMapping("/create")
     public Response<Config> create(@RequestBody Config config, @RequestAttribute("username") String username) {
         if (config == null || StringUtils.isEmpty(config.getConfigKey()) || StringUtils.isEmpty(config.getConfigValue()) || config.getTargetId() == null) {
@@ -77,7 +68,7 @@ public class ConfigController {
             return Response.failed(ErrorCode.PARAMETER_ERROR, ErrorMessage.PARAMETER_ERROR);
         }
         User user = userRepository.findByUsername(username);
-        Config existConfig = repository.findConfigByConfigKeyAndUserIdAndType(config.getConfigKey(), user.getId(), config.getType());
+        Config existConfig = repository.findConfigByConfigKeyAndUserIdAndTargetIdAndType(config.getConfigKey(), user.getId(), config.getTargetId(), config.getType());
         if (existConfig != null) {
             return Response.failed(ErrorCode.PARAMETER_ERROR, ErrorMessage.PARAMETER_ERROR);
         }
@@ -109,7 +100,7 @@ public class ConfigController {
             return Response.failed(ErrorCode.PARAMETER_ERROR, ErrorMessage.PARAMETER_ERROR);
         }
         if (!StringUtils.isEmpty(config.getConfigKey()) && !Objects.equals(config.getConfigKey(), existConfig.getConfigKey())) {
-            Config configByKey = repository.findConfigByConfigKeyAndUserIdAndType(config.getConfigKey(), user.getId(), existConfig.getType());
+            Config configByKey = repository.findConfigByConfigKeyAndUserIdAndTargetIdAndType(config.getConfigKey(), user.getId(), existConfig.getTargetId(), existConfig.getType());
             if (configByKey != null) {
                 return Response.failed(ErrorCode.PARAMETER_ERROR, ErrorMessage.PARAMETER_ERROR);
             } else {

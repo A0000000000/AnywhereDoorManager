@@ -13,7 +13,7 @@ public interface ConfigRepository extends JpaRepository<Config, Integer> {
 
     List<Config> findAllByUserId(Integer userId);
     List<Config> findAllByUserIdAndTypeAndTargetId(Integer userId, Integer type, Integer targetId);
-    Config findConfigByConfigKeyAndUserIdAndType(String configKey, Integer userId, Integer type);
+    Config findConfigByConfigKeyAndUserIdAndTargetIdAndType(String configKey, Integer userId, Integer targetId, Integer type);
     @Transactional
     @Modifying
     void deleteConfigByTargetIdAndTypeAndUserId(Integer targetId, Integer type, Integer userId);
