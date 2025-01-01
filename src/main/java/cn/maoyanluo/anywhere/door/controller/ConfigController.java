@@ -43,6 +43,12 @@ public class ConfigController {
         return Response.success(repository.findAllByUserId(user.getId()));
     }
 
+    @GetMapping("/getByTypeAndTarget")
+    public Response<List<Config>> getConfigsByTypeAndTargetId(@RequestParam("type") Integer type, @RequestParam("target_id") Integer targetId, @RequestAttribute("username") String username) {
+        User user = userRepository.findByUsername(username);
+        return Response.success(repository.findAllByUserIdAndTypeAndTargetId(user.getId(), type, targetId));
+    }
+
     @GetMapping("/{id}")
     public Response<Config> getConfigById(@PathVariable("id") Integer id, @RequestAttribute("username") String username) {
         User user = userRepository.findByUsername(username);

@@ -10,6 +10,7 @@ import java.util.List;
 public interface ConfigRepository extends JpaRepository<Config, Integer> {
 
     List<Config> findAllByUserId(Integer userId);
+    List<Config> findAllByUserIdAndTypeAndTargetId(Integer userId, Integer type, Integer targetId);
     Config findConfigByConfigKeyAndUserIdAndType(String configKey, Integer userId, Integer type);
     void deleteConfigByTargetIdAndTypeAndUserId(Integer targetId, Integer type, Integer userId);
 
