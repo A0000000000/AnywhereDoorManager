@@ -96,18 +96,14 @@ public class ImsdkController {
         if (!StringUtils.isEmpty(imsdk.getImsdkName())) {
             currentImsdk.setImsdkName(imsdk.getImsdkName());
         }
-        if (!StringUtils.isEmpty(imsdk.getImsdkDescribe())) {
-            currentImsdk.setImsdkDescribe(imsdk.getImsdkDescribe());
-        }
+        currentImsdk.setImsdkDescribe(imsdk.getImsdkDescribe());
         if (!StringUtils.isEmpty(imsdk.getImsdkHost())) {
             currentImsdk.setImsdkHost(imsdk.getImsdkHost());
         }
         if (imsdk.getImsdkPort() != null) {
             currentImsdk.setImsdkPort(imsdk.getImsdkPort());
         }
-        if (!StringUtils.isEmpty(imsdk.getImsdkPrefix())) {
-            currentImsdk.setImsdkPrefix(imsdk.getImsdkPrefix());
-        }
+        currentImsdk.setImsdkPrefix(imsdk.getImsdkPrefix());
         if (!StringUtils.isEmpty(imsdk.getImsdkToken())) {
             currentImsdk.setImsdkToken(imsdk.getImsdkToken());
         }

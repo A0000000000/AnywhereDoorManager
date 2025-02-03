@@ -96,18 +96,14 @@ public class PluginController {
         if (!StringUtils.isEmpty(plugin.getPluginName())) {
             currentPlugin.setPluginName(plugin.getPluginName());
         }
-        if (!StringUtils.isEmpty(plugin.getPluginDescribe())) {
-            currentPlugin.setPluginDescribe(plugin.getPluginDescribe());
-        }
+        currentPlugin.setPluginDescribe(plugin.getPluginDescribe());
         if (!StringUtils.isEmpty(plugin.getPluginHost())) {
             currentPlugin.setPluginHost(plugin.getPluginHost());
         }
         if (plugin.getPluginPort() != null) {
             currentPlugin.setPluginPort(plugin.getPluginPort());
         }
-        if (!StringUtils.isEmpty(plugin.getPluginPrefix())) {
-            currentPlugin.setPluginPrefix(plugin.getPluginPrefix());
-        }
+        currentPlugin.setPluginPrefix(plugin.getPluginPrefix());
         if (!StringUtils.isEmpty(plugin.getPluginToken())) {
             currentPlugin.setPluginToken(plugin.getPluginToken());
         }
