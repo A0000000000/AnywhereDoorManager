@@ -11,13 +11,16 @@ RUN mkdir jdk && tar -zxvf jdk-23_linux-x64_bin.tar.gz -C jdk --strip-components
 
 WORKDIR /ws/code
 
-COPY src /ws/code/src
 COPY pom.xml /ws/code
 
 ENV JAVA_HOME=/ws/jdk
 ENV MAVEN_HOME=/ws/apache-maven-3.9.9
 
 ENV PATH=$PATH:${JAVA_HOME}/bin:${MAVEN_HOME}/bin
+
+RUN mvn dependency:resolve
+
+COPY src /ws/code/src
 
 RUN mvn package
 
