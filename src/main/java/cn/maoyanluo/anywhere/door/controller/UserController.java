@@ -18,16 +18,16 @@ import java.util.Map;
 @RequestMapping("/user")
 public class UserController {
 
+    private final UserRepository repository;
+    private final MD5Tools md5Tools;
+    private final JwtTools jwtTools;
+
     @Autowired
     public UserController(UserRepository repository, MD5Tools md5Tools, JwtTools jwtTools) {
         this.repository = repository;
         this.md5Tools = md5Tools;
         this.jwtTools = jwtTools;
     }
-
-    private final UserRepository repository;
-    private final MD5Tools md5Tools;
-    private final JwtTools jwtTools;
 
     @GetMapping("/register")
     public Response<Token> register(@RequestParam("username") String username,

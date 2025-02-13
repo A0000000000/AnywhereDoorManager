@@ -4,13 +4,17 @@ import cn.maoyanluo.anywhere.door.bean.Response;
 import cn.maoyanluo.anywhere.door.constant.ErrorCode;
 import cn.maoyanluo.anywhere.door.constant.ErrorMessage;
 import cn.maoyanluo.anywhere.door.entity.Config;
+import cn.maoyanluo.anywhere.door.entity.Log;
 import cn.maoyanluo.anywhere.door.entity.Plugin;
 import cn.maoyanluo.anywhere.door.entity.User;
 import cn.maoyanluo.anywhere.door.repository.ConfigRepository;
+import cn.maoyanluo.anywhere.door.repository.LogRepository;
 import cn.maoyanluo.anywhere.door.repository.PluginRepository;
 import cn.maoyanluo.anywhere.door.repository.UserRepository;
+import cn.maoyanluo.anywhere.door.tools.LogTools;
 import io.micrometer.common.util.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -21,16 +25,21 @@ import java.util.Optional;
 @RequestMapping("/plugin")
 public class PluginController {
 
-    @Autowired
-    public PluginController(PluginRepository repository, UserRepository userRepository, ConfigRepository configRepository) {
-        this.repository = repository;
-        this.userRepository = userRepository;
-        this.configRepository = configRepository;
-    }
-
     private final PluginRepository repository;
     private final UserRepository userRepository;
     private final ConfigRepository configRepository;
+    private final LogRepository logRepository;
+
+    private final LogTools logTools;
+
+    @Autowired
+    public PluginController(PluginRepository repository, UserRepository userRepository, ConfigRepository configRepository, LogRepository logRepository, LogTools logTools) {
+        this.repository = repository;
+        this.userRepository = userRepository;
+        this.configRepository = configRepository;
+        this.logRepository = logRepository;
+        this.logTools = logTools;
+    }
 
     @GetMapping("/{id}")
     public Response<Plugin> getPluginById(@PathVariable("id") Integer id, @RequestAttribute("username") String username) {
@@ -115,6 +124,7 @@ public class PluginController {
     }
 
     @DeleteMapping("/{id}")
+    @Transactional
     public Response<Plugin> delete(@PathVariable("id") Integer id, @RequestAttribute("username") String username) {
         User user = userRepository.findByUsername(username);
         Optional<Plugin> currentPluginOptional = repository.findById(id);
@@ -126,6 +136,7 @@ public class PluginController {
             return Response.failed(ErrorCode.NO_PERMISSION, ErrorMessage.NO_PERMISSION);
         }
         configRepository.deleteConfigByTargetIdAndTypeAndUserId(currentPlugin.getId(), Config.TYPE_PLUGIN, user.getId());
+        logRepository.deleteByUserIdAndTypeAndTargetId(user.getId(), Log.TYPE_PLUGIN, currentPlugin.getId());
         repository.delete(currentPlugin);
         return Response.success(currentPlugin);
     }

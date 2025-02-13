@@ -5,12 +5,16 @@ import cn.maoyanluo.anywhere.door.constant.ErrorCode;
 import cn.maoyanluo.anywhere.door.constant.ErrorMessage;
 import cn.maoyanluo.anywhere.door.entity.Config;
 import cn.maoyanluo.anywhere.door.entity.Imsdk;
+import cn.maoyanluo.anywhere.door.entity.Log;
 import cn.maoyanluo.anywhere.door.entity.User;
 import cn.maoyanluo.anywhere.door.repository.ConfigRepository;
 import cn.maoyanluo.anywhere.door.repository.ImsdkRepository;
+import cn.maoyanluo.anywhere.door.repository.LogRepository;
 import cn.maoyanluo.anywhere.door.repository.UserRepository;
+import cn.maoyanluo.anywhere.door.tools.LogTools;
 import io.micrometer.common.util.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -21,16 +25,21 @@ import java.util.Optional;
 @RequestMapping("/imsdk")
 public class ImsdkController {
 
-    @Autowired
-    public ImsdkController(ImsdkRepository repository, UserRepository userRepository, ConfigRepository configRepository) {
-        this.repository = repository;
-        this.userRepository = userRepository;
-        this.configRepository = configRepository;
-    }
-
     private final ImsdkRepository repository;
     private final UserRepository userRepository;
     private final ConfigRepository configRepository;
+    private final LogRepository logRepository;
+
+    private final LogTools logTools;
+
+    @Autowired
+    public ImsdkController(ImsdkRepository repository, UserRepository userRepository, ConfigRepository configRepository, LogRepository logRepository, LogTools logTools) {
+        this.repository = repository;
+        this.userRepository = userRepository;
+        this.configRepository = configRepository;
+        this.logRepository = logRepository;
+        this.logTools = logTools;
+    }
 
     @GetMapping("/{id}")
     public Response<Imsdk> getImsdkById(@PathVariable("id") Integer id, @RequestAttribute("username") String username) {
@@ -115,6 +124,7 @@ public class ImsdkController {
     }
 
     @DeleteMapping("/{id}")
+    @Transactional
     public Response<Imsdk> delete(@PathVariable("id") Integer id, @RequestAttribute("username") String username) {
         User user = userRepository.findByUsername(username);
         Optional<Imsdk> currentImsdkOptional = repository.findById(id);
@@ -126,6 +136,7 @@ public class ImsdkController {
             return Response.failed(ErrorCode.NO_PERMISSION, ErrorMessage.NO_PERMISSION);
         }
         configRepository.deleteConfigByTargetIdAndTypeAndUserId(currentImsdk.getId(), Config.TYPE_IMSDK, user.getId());
+        logRepository.deleteByUserIdAndTypeAndTargetId(user.getId(), Log.TYPE_IMSDK, currentImsdk.getId());
         repository.delete(currentImsdk);
         return Response.success(currentImsdk);
     }

@@ -19,5 +19,6 @@ public class ErrorCode {
     public static final int EXPIRE_TOKEN = -14;
     public static final int PARAMETER_ERROR = -15;
     public static final int USER_NOT_EXIST = -16;
+    public static final int ERROR_TYPE = -17;
 
 }
