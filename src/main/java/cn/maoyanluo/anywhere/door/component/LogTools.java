@@ -1,4 +1,4 @@
-package cn.maoyanluo.anywhere.door.tools;
+package cn.maoyanluo.anywhere.door.component;
 
 import cn.maoyanluo.anywhere.door.entity.Log;
 import cn.maoyanluo.anywhere.door.repository.LogRepository;
@@ -7,6 +7,8 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class LogTools {
+
+    private static final Integer GLOBAL_LOG_USER_ID = -1;
 
     private final LogRepository logRepository;
 
@@ -33,7 +35,6 @@ public class LogTools {
 
     public void i(String tag, String log, int userId) {
         logRepository.save(createLogInstance(tag, log, Log.LEVEL_INFO, userId));
-
     }
 
     public void w(String tag, String log, int userId) {
@@ -42,6 +43,22 @@ public class LogTools {
 
     public void e(String tag, String log, int userId) {
         logRepository.save(createLogInstance(tag, log, Log.LEVEL_ERROR, userId));
+    }
+
+    public void d(String tag, String log) {
+        logRepository.save(createLogInstance(tag, log, Log.LEVEL_DEBUG, GLOBAL_LOG_USER_ID));
+    }
+
+    public void i(String tag, String log) {
+        logRepository.save(createLogInstance(tag, log, Log.LEVEL_INFO, GLOBAL_LOG_USER_ID));
+    }
+
+    public void w(String tag, String log) {
+        logRepository.save(createLogInstance(tag, log, Log.LEVEL_WARN, GLOBAL_LOG_USER_ID));
+    }
+
+    public void e(String tag, String log) {
+        logRepository.save(createLogInstance(tag, log, Log.LEVEL_ERROR, GLOBAL_LOG_USER_ID));
     }
 
 }

@@ -1,4 +1,4 @@
-package cn.maoyanluo.anywhere.door.tools;
+package cn.maoyanluo.anywhere.door.component;
 
 import org.springframework.stereotype.Component;
 import org.springframework.util.DigestUtils;

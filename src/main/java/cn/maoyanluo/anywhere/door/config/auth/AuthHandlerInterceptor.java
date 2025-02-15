@@ -4,7 +4,7 @@ import cn.maoyanluo.anywhere.door.bean.Response;
 import cn.maoyanluo.anywhere.door.constant.ErrorCode;
 import cn.maoyanluo.anywhere.door.constant.ErrorMessage;
 import cn.maoyanluo.anywhere.door.constant.ParamsConstant;
-import cn.maoyanluo.anywhere.door.tools.JwtTools;
+import cn.maoyanluo.anywhere.door.component.JwtTools;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.micrometer.common.util.StringUtils;
 import jakarta.servlet.http.HttpServletRequest;

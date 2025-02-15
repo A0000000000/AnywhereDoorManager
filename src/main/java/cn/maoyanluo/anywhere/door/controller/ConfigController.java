@@ -12,7 +12,7 @@ import cn.maoyanluo.anywhere.door.repository.ConfigRepository;
 import cn.maoyanluo.anywhere.door.repository.ImsdkRepository;
 import cn.maoyanluo.anywhere.door.repository.PluginRepository;
 import cn.maoyanluo.anywhere.door.repository.UserRepository;
-import cn.maoyanluo.anywhere.door.tools.LogTools;
+import cn.maoyanluo.anywhere.door.component.LogTools;
 import io.micrometer.common.util.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -30,15 +30,12 @@ public class ConfigController {
     private final PluginRepository pluginRepository;
     private final ImsdkRepository imsdkRepository;
 
-    private final LogTools logTools;
-
     @Autowired
     public ConfigController(ConfigRepository repository, UserRepository userRepository, PluginRepository pluginRepository, ImsdkRepository imsdkRepository, LogTools logTools) {
         this.repository = repository;
         this.userRepository = userRepository;
         this.pluginRepository = pluginRepository;
         this.imsdkRepository = imsdkRepository;
-        this.logTools = logTools;
     }
 
     @GetMapping

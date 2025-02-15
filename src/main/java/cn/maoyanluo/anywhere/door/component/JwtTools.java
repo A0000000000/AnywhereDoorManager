@@ -1,10 +1,11 @@
-package cn.maoyanluo.anywhere.door.tools;
+package cn.maoyanluo.anywhere.door.component;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.algorithms.Algorithm;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.Date;
@@ -18,6 +19,14 @@ public class JwtTools {
     private static final long TOKEN_EXPIRE = 24 * 60 * 60;
     private static final long FLUSH_EXPIRE = 7 * 24 * 60 * 60;
 
+    public static final String TAG = JwtTools.class.getSimpleName();
+
+    private final LogTools logTools;
+
+    @Autowired
+    public JwtTools(LogTools logTools) {
+        this.logTools = logTools;
+    }
 
     public String generateToken(String username) {
         return generateTokenInner(username, TOKEN_EXPIRE);
@@ -47,6 +56,7 @@ public class JwtTools {
             String username = verifier.verify(token).getClaims().get("username").asString();
             return new Pair<>(username, expireTime > System.currentTimeMillis());
         } catch (Exception e) {
+            logTools.w(TAG, "parseToken failed, token: " + token + ", error: " + e.getMessage());
             return null;
         }
     }

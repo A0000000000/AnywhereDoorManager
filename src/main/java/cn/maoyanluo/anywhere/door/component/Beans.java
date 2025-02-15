@@ -1,4 +1,4 @@
-package cn.maoyanluo.anywhere.door.tools;
+package cn.maoyanluo.anywhere.door.component;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.context.annotation.Bean;

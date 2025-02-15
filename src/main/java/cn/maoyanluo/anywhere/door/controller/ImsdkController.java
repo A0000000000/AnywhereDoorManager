@@ -11,7 +11,7 @@ import cn.maoyanluo.anywhere.door.repository.ConfigRepository;
 import cn.maoyanluo.anywhere.door.repository.ImsdkRepository;
 import cn.maoyanluo.anywhere.door.repository.LogRepository;
 import cn.maoyanluo.anywhere.door.repository.UserRepository;
-import cn.maoyanluo.anywhere.door.tools.LogTools;
+import cn.maoyanluo.anywhere.door.component.LogTools;
 import io.micrometer.common.util.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
@@ -30,15 +30,12 @@ public class ImsdkController {
     private final ConfigRepository configRepository;
     private final LogRepository logRepository;
 
-    private final LogTools logTools;
-
     @Autowired
     public ImsdkController(ImsdkRepository repository, UserRepository userRepository, ConfigRepository configRepository, LogRepository logRepository, LogTools logTools) {
         this.repository = repository;
         this.userRepository = userRepository;
         this.configRepository = configRepository;
         this.logRepository = logRepository;
-        this.logTools = logTools;
     }
 
     @GetMapping("/{id}")

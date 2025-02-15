@@ -7,7 +7,7 @@ import cn.maoyanluo.anywhere.door.entity.Log;
 import cn.maoyanluo.anywhere.door.entity.User;
 import cn.maoyanluo.anywhere.door.repository.LogRepository;
 import cn.maoyanluo.anywhere.door.repository.UserRepository;
-import cn.maoyanluo.anywhere.door.tools.LogTools;
+import cn.maoyanluo.anywhere.door.component.LogTools;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
@@ -21,13 +21,10 @@ public class LogController {
     private final LogRepository repository;
     private final UserRepository userRepository;
 
-    private final LogTools logTools;
-
     @Autowired
     public LogController(LogRepository repository, UserRepository userRepository, LogTools logTools) {
         this.repository = repository;
         this.userRepository = userRepository;
-        this.logTools = logTools;
     }
 
     @GetMapping("/getLogList/{type}/{id}")

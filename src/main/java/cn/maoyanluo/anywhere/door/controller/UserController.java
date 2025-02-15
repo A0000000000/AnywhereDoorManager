@@ -6,13 +6,15 @@ import cn.maoyanluo.anywhere.door.constant.ErrorCode;
 import cn.maoyanluo.anywhere.door.constant.ErrorMessage;
 import cn.maoyanluo.anywhere.door.entity.User;
 import cn.maoyanluo.anywhere.door.repository.UserRepository;
-import cn.maoyanluo.anywhere.door.tools.JwtTools;
-import cn.maoyanluo.anywhere.door.tools.MD5Tools;
+import cn.maoyanluo.anywhere.door.component.JwtTools;
+import cn.maoyanluo.anywhere.door.component.LogTools;
+import cn.maoyanluo.anywhere.door.component.MD5Tools;
 import io.micrometer.common.util.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
+import java.util.Objects;
 
 @RestController
 @RequestMapping("/user")
@@ -23,7 +25,7 @@ public class UserController {
     private final JwtTools jwtTools;
 
     @Autowired
-    public UserController(UserRepository repository, MD5Tools md5Tools, JwtTools jwtTools) {
+    public UserController(UserRepository repository, MD5Tools md5Tools, JwtTools jwtTools, LogTools logTools) {
         this.repository = repository;
         this.md5Tools = md5Tools;
         this.jwtTools = jwtTools;
@@ -67,8 +69,8 @@ public class UserController {
                                                     @RequestParam("flush_token") String flushToken) {
         JwtTools.Pair<String, Boolean> tokenParse = jwtTools.parseToken(token);
         JwtTools.Pair<String, Boolean> flushTokenParse = jwtTools.parseToken(flushToken);
-        if (tokenParse != null && flushTokenParse != null) {
-            if (flushTokenParse.getSecond()) {
+        if (tokenParse != null && flushTokenParse != null && Objects.equals(tokenParse.getFirst(), flushTokenParse.getFirst())) {
+            if (!tokenParse.getSecond() && flushTokenParse.getSecond()) {
                 String newToken = jwtTools.generateToken(flushTokenParse.getFirst());
                 String newFlushToken = jwtTools.generateFlushToken(flushTokenParse.getFirst());
                 return Response.success(new Token(newToken, newFlushToken));
