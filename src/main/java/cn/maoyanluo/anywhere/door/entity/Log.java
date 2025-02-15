@@ -44,7 +44,7 @@ public class Log implements Serializable {
     @Column(name = "target_id")
     private Integer targetId;
 
-    @Column(name = "c_timestamp")
+    @Column(name = "timestamp")
     private Long timestamp;
 
     @Column(name = "level")
