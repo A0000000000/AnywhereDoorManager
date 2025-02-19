@@ -70,7 +70,7 @@ public class UserController {
         JwtTools.Pair<String, Boolean> tokenParse = jwtTools.parseToken(token);
         JwtTools.Pair<String, Boolean> flushTokenParse = jwtTools.parseToken(flushToken);
         if (tokenParse != null && flushTokenParse != null && Objects.equals(tokenParse.getFirst(), flushTokenParse.getFirst())) {
-            if (!tokenParse.getSecond() && flushTokenParse.getSecond()) {
+            if (flushTokenParse.getSecond()) {
                 String newToken = jwtTools.generateToken(flushTokenParse.getFirst());
                 String newFlushToken = jwtTools.generateFlushToken(flushTokenParse.getFirst());
                 return Response.success(new Token(newToken, newFlushToken));
