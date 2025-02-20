@@ -18,7 +18,7 @@ ENV MAVEN_HOME=/ws/apache-maven-3.9.9
 
 ENV PATH=$PATH:${JAVA_HOME}/bin:${MAVEN_HOME}/bin
 
-RUN mvn dependency:resolve
+RUN mvn dependency:go-offline
 
 COPY src /ws/code/src
 
